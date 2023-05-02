@@ -24,107 +24,107 @@ struct Window BloksInitialise(struct Window wind0)
 				* wind.bloks[i][j].size.height + 2;
 
 			wind.bloks[i][j].type = rand() % 5;
-			wind.bloks_buf[i][j] = 1;
+			wind.bloks[i][j].condition = 1;
 		}
 	}
 	return wind;
 }
 
-void DrawBloks(struct Window wind)
+void DrawBloks(struct Blok bloks[FIELD_SIZE][FIELD_SIZE], int field_size)
 {
 	glBegin(GL_QUADS);
-	for (int i = 0; i < wind.field_size; i++)
+	for (int i = 0; i < field_size; i++)
 	{
-		for (int j = 0; j < wind.field_size; j++)
+		for (int j = 0; j < field_size; j++)
 		{
-			if (wind.bloks[i][j].type == 10)
+			if (bloks[i][j].type == 10)
 			{
-				BoombDraw(wind, i, j);
+				BoombDraw(bloks[i][j]);
 			}
-			else if (wind.bloks[i][j].type == 11)
+			else if (bloks[i][j].type == 11)
 			{
-				RacketLineDraw(wind, i, j);
+				RacketLineDraw(bloks[i][j]);
 			}
-			else if (wind.bloks[i][j].type == 12)
+			else if (bloks[i][j].type == 12)
 			{
-				RacketColumDraw(wind, i, j);
+				RacketColumDraw(bloks[i][j]);
 			}
 			else
 			{
-				if (wind.bloks[i][j].type == 0)
+				if (bloks[i][j].type == 0)
 				{
 					glColor3f(1.0, 1.0, 1.0);
 				}
-				else if (wind.bloks[i][j].type == 1)
+				else if (bloks[i][j].type == 1)
 				{
 					glColor3f(1.0, 0.0, 0.0);
 				}
-				else if (wind.bloks[i][j].type == 2)
+				else if (bloks[i][j].type == 2)
 				{
 					glColor3f(0.0, 1.0, 0.0);
 				}
-				else if (wind.bloks[i][j].type == 3)
+				else if (bloks[i][j].type == 3)
 				{
 					glColor3f(0.0, 0.0, 1.0);
 				}
-				else if (wind.bloks[i][j].type == 4)
+				else if (bloks[i][j].type == 4)
 				{
 					glColor3f(1.0, 1.0, 0.0);
 				}
-				else if (wind.bloks[i][j].type == 5)
+				else if (bloks[i][j].type == 5)
 				{
 					glColor3f(1.0, 0.0, 1.0);
 				}
-				else if (wind.bloks[i][j].type == 6)
+				else if (bloks[i][j].type == 6)
 				{
 					glColor3f(0.0, 1.0, 1.0);
 				}
-				else if (wind.bloks[i][j].type == 7)
+				else if (bloks[i][j].type == 7)
 				{
 					glColor3f(0.5, 1.0, 0.5);
 				}
-				else if (wind.bloks[i][j].type == 8)
+				else if (bloks[i][j].type == 8)
 				{
 					glColor3f(1.0, 0.5, 0.5);
 				}
-				else if (wind.bloks[i][j].type == 9)
+				else if (bloks[i][j].type == 9)
 				{
 					glColor3f(0.2, 0.5, 0.5);
 				}
-				else if (wind.bloks[i][j].type == 10)
+				else if (bloks[i][j].type == 10)
 				{
 					glColor3f(0.0, 0.0, 0.0);
 				}
 
-				glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-					wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-				glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-					wind.bloks[i][j].position.y);
-				glVertex2d(wind.bloks[i][j].position.x, wind.bloks[i][j].position.y);
+				glVertex2d(bloks[i][j].position.x + bloks[i][j].size.width,
+					bloks[i][j].position.y + bloks[i][j].size.height);
+				glVertex2d(bloks[i][j].position.x + bloks[i][j].size.width,
+					bloks[i][j].position.y);
+				glVertex2d(bloks[i][j].position.x, bloks[i][j].position.y);
 
-				glVertex2d(wind.bloks[i][j].position.x,
-					wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
+				glVertex2d(bloks[i][j].position.x,
+					bloks[i][j].position.y + bloks[i][j].size.height);
 			}
 		}
 	}
 	glEnd();
 
-	for (int i = 0; i < wind.field_size; i++)
+	for (int i = 0; i < field_size; i++)
 	{
-		for (int j = 0; j < wind.field_size; j++)
+		for (int j = 0; j < field_size; j++)
 		{
 			glColor3f(0, 0, 0);
 
 			glBegin(GL_LINE_LOOP);
 
-			glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-				wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-			glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-				wind.bloks[i][j].position.y);
-			glVertex2d(wind.bloks[i][j].position.x, wind.bloks[i][j].position.y);
+			glVertex2d(bloks[i][j].position.x + bloks[i][j].size.width,
+				bloks[i][j].position.y + bloks[i][j].size.height);
+			glVertex2d(bloks[i][j].position.x + bloks[i][j].size.width,
+				bloks[i][j].position.y);
+			glVertex2d(bloks[i][j].position.x, bloks[i][j].position.y);
 
-			glVertex2d(wind.bloks[i][j].position.x,
-				wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
+			glVertex2d(bloks[i][j].position.x,
+				bloks[i][j].position.y + bloks[i][j].size.height);
 
 			glEnd();
 		}
@@ -136,12 +136,12 @@ struct Window SwapPlates(struct Window wind0, struct Position first_plate, struc
 	struct Window wind = wind0;
 
 	int type_buf;
-	int blok_buf_buf;
+	int condition_buf;
 
-	blok_buf_buf = wind.bloks_buf[first_plate.x][first_plate.y];
-	wind.bloks_buf[first_plate.x][first_plate.y]
-		= wind.bloks_buf[second_plate.x][second_plate.y];
-	wind.bloks_buf[second_plate.x][second_plate.y] = blok_buf_buf;
+	condition_buf = wind.bloks[first_plate.x][first_plate.y].condition;
+	wind.bloks[first_plate.x][first_plate.y].condition
+		= wind.bloks[second_plate.x][second_plate.y].condition;
+	wind.bloks[second_plate.x][second_plate.y].condition = condition_buf;
 
 	type_buf = wind.bloks[first_plate.x][first_plate.y].type;
 	wind.bloks[first_plate.x][first_plate.y].type
@@ -168,15 +168,15 @@ struct Window CheckFildToDestroy(struct Window wind0)
 					&& wind.bloks[i][j].type == wind.bloks[i + 2][j].type
 					&& wind.bloks[i][j].type != 0)
 				{
-					wind.bloks_buf[i][j] = 0;
+					wind.bloks[i][j].condition = 0;
 
 					for (int k = i; k < wind.field_size - 1; k++)
 					{
 						if (wind.bloks[k][j].type == wind.bloks[k + 1][j].type)
 						{
-							if (wind.bloks_buf[k + 1][j] == 1)
+							if (wind.bloks[k + 1][j].condition == 1)
 							{
-								wind.bloks_buf[k + 1][j] = 0;
+								wind.bloks[k + 1][j].condition = 0;
 							}
 							wind.bonus_count++;
 						}
@@ -184,11 +184,11 @@ struct Window CheckFildToDestroy(struct Window wind0)
 						{
 							if (wind.bonus_count == 3 && wind.destroy_start_flag == 1)
 							{
-								wind = RacketLineInitialise(wind, i, j);
+								wind.bloks[i][j] = RacketLineInitialise(wind.bloks[i][j]);
 							}
 							else if (wind.bonus_count > 5 && wind.destroy_start_flag == 1)
 							{
-								wind = BoombInitialise(wind, i, j);
+								wind.bloks[i][j] = BoombInitialise(wind.bloks[i][j]);
 							}
 							else
 							{
@@ -205,15 +205,15 @@ struct Window CheckFildToDestroy(struct Window wind0)
 					&& wind.bloks[i][j + 1].type == wind.bloks[i][j + 2].type
 					&& wind.bloks[i][j].type != 0)
 				{
-					wind.bloks_buf[i][j] = 0;
+					wind.bloks[i][j].condition = 0;
 
 					for (int k = j; k < wind.field_size - 1; k++)
 					{
 						if (wind.bloks[i][k].type == wind.bloks[i][k + 1].type)
 						{
-							if (wind.bloks_buf[i][k + 1] == 1)
+							if (wind.bloks[i][k + 1].condition == 1)
 							{
-								wind.bloks_buf[i][k + 1] = 0;
+								wind.bloks[i][k + 1].condition = 0;
 							}
 							wind.bonus_count++;
 						}
@@ -221,11 +221,11 @@ struct Window CheckFildToDestroy(struct Window wind0)
 						{
 							if (wind.bonus_count == 3 && wind.destroy_start_flag == 1)
 							{
-								wind = RacketColumInitialise(wind, i, j);
+								wind.bloks[i][j] = RacketColumInitialise(wind.bloks[i][j]);
 							}
 							else if (wind.bonus_count > 5 && wind.destroy_start_flag == 1)
 							{
-								wind = BoombInitialise(wind, i, j);
+								wind.bloks[i][j] = BoombInitialise(wind.bloks[i][j]);
 							}
 							else
 							{
@@ -253,12 +253,12 @@ struct Window Destroy(struct Window wind0)
 	{
 		for (int j = 0; j < wind.field_size; j++)
 		{
-			if (wind.bloks_buf[i][j] == 0)
+			if (wind.bloks[i][j].condition == 0)
 			{
 				wind.destroy_count = 1;
 				wind.destroy_flag = 1;
 				wind.bloks[i][j].type = 0;
-				wind.bloks_buf[i][j] = 1;
+				wind.bloks[i][j].condition = 1;
 				if (wind.destroy_start_flag == 1)
 				{
 					wind.score++;
@@ -285,7 +285,7 @@ struct Window CheckFildToFill(struct Window wind0)
 				if (wind.bloks[i][0].type == 0 && j == 0)
 				{
 					wind.bloks[i][0].type = rand() % 5;
-					wind.bloks_buf[i][0] = 1;
+					wind.bloks[i][0].condition = 1;
 					count++;
 				}
 
@@ -294,8 +294,8 @@ struct Window CheckFildToFill(struct Window wind0)
 					wind.bloks[i][j + 1].type = wind.bloks[i][j].type;
 					wind.bloks[i][j].type = 0;
 
-					wind.bloks_buf[i][j + 1] = wind.bloks_buf[i][j];
-					wind.bloks_buf[i][j] = 1;
+					wind.bloks[i][j + 1].condition = wind.bloks[i][j].condition;
+					wind.bloks[i][j].condition = 1;
 					count++;
 				}
 			}

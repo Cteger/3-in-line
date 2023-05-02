@@ -108,13 +108,8 @@ void Draw()
 
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 
-	//MENU
-
 	//BLOKS
-	DrawBloks(wind);
-
-	//BONUS
-	//DrawBonus(wind);
+	DrawBloks(wind.bloks, wind.field_size);
 
 	glutSwapBuffers();
 }

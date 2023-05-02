@@ -7,15 +7,15 @@ struct Window BonusCheck(struct Window wind0, int i, int j)
 {
 	struct Window wind = wind0;
 
-	if (wind.bloks_buf[i][j] == 10)
+	if (wind.bloks[i][j].condition == 10)
 	{
 		wind = BoombBoom(wind, i, j);
 	}
-	else if (wind.bloks_buf[i][j] == 11)
+	else if (wind.bloks[i][j].condition == 11)
 	{
 		wind = RacketLineLaunch(wind, i, j);
 	}
-	else if (wind.bloks_buf[i][j] == 12)
+	else if (wind.bloks[i][j].condition == 12)
 	{
 		wind = RacketColumLaunch(wind, i, j);
 	}
@@ -23,14 +23,14 @@ struct Window BonusCheck(struct Window wind0, int i, int j)
 	return wind;
 }
 
-struct Window BoombInitialise(struct Window wind0, int i, int j)
+struct Blok BoombInitialise(struct Blok blok0)
 {
-	struct Window wind = wind0;
+	struct Blok blok = blok0;
 	
-	wind.bloks[i][j].type = 10;
-	wind.bloks_buf[i][j] = 10;
+	blok.type = 10;
+	blok.condition = 10;
 	
-	return wind;
+	return blok;
 }
 
 struct Window BoombBoom(struct Window wind0, int ipos, int jpos)
@@ -48,73 +48,73 @@ struct Window BoombBoom(struct Window wind0, int ipos, int jpos)
 				{
 					wind = BonusCheck(wind, i, j);
 				}
-				wind.bloks_buf[i][j] = 0;
+				wind.bloks[i][j].condition = 0;
 			}
 		}
 	}
 	return wind;
 }
 
-void BoombDraw(struct Window wind, int i, int j)
+void BoombDraw(struct Blok blok)
 {
 	glColor3f(0.16, 0.36, 1.0);
 
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x, wind.bloks[i][j].position.y);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y);
+	glVertex2d(blok.position.x, blok.position.y);
 
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
+	glVertex2d(blok.position.x,
+		blok.position.y + blok.size.height);
 
 	glColor3f(0.0, 0.0, 0.0);
 
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width / 4,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height * 3 / 4);
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.width / 4,
+		blok.position.y + blok.size.height * 3 / 4);
+	glVertex2d(blok.position.x,
+		blok.position.y);
+	glVertex2d(blok.position.x,
+		blok.position.y + blok.size.height);
 
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width / 4,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height / 4);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.height,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y);
+	glVertex2d(blok.position.x,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.width / 4,
+		blok.position.y + blok.size.height / 4);
+	glVertex2d(blok.position.x + blok.size.height,
+		blok.position.y);
+	glVertex2d(blok.position.x,
+		blok.position.y);
 
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width * 3 / 4,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height / 4);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.height,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.height,
-		wind.bloks[i][j].position.y);
+	glVertex2d(blok.position.x,
+		blok.position.y);
+	glVertex2d(blok.position.x + blok.size.width * 3 / 4,
+		blok.position.y + blok.size.height / 4);
+	glVertex2d(blok.position.x + blok.size.height,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.height,
+		blok.position.y);
 
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width * 3 / 4,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height * 3 / 4);
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.height,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y);
+	glVertex2d(blok.position.x + blok.size.width * 3 / 4,
+		blok.position.y + blok.size.height * 3 / 4);
+	glVertex2d(blok.position.x,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.height,
+		blok.position.y + blok.size.height);
 }
 
-struct Window RacketLineInitialise(struct Window wind0, int i, int j)
+struct Blok RacketLineInitialise(struct Blok blok0)
 {
-	struct Window wind = wind0;
+	struct Blok blok = blok0;
 
-	wind.bloks[i][j].type = 11;
-	wind.bloks_buf[i][j] = 11;
+	blok.type = 11;
+	blok.condition = 11;
 
-	return wind;
+	return blok;
 }
 
 struct Window RacketLineLaunch(struct Window wind0, int ipos, int jpos)
@@ -127,46 +127,46 @@ struct Window RacketLineLaunch(struct Window wind0, int ipos, int jpos)
 		{
 			wind = BonusCheck(wind, i, jpos);
 		}
-		wind.bloks_buf[i][jpos] = 0;
+		wind.bloks[i][jpos].condition = 0;
 	}
 
 	return wind;
 }
 
-void RacketLineDraw(struct Window wind, int i, int j)
+void RacketLineDraw(struct Blok blok)
 {
 	glColor3f(0.0, 0.0, 0.0);
 
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x, wind.bloks[i][j].position.y);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y);
+	glVertex2d(blok.position.x, blok.position.y);
 
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
+	glVertex2d(blok.position.x,
+		blok.position.y + blok.size.height);
 
 	glColor3f(1.0, 0.59, 0.66);
 
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width / 2,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height * 3 / 4);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height / 2);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width / 2,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height / 4);
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height / 2);
+	glVertex2d(blok.position.x + blok.size.width / 2,
+		blok.position.y + blok.size.height * 3 / 4);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y + blok.size.height / 2);
+	glVertex2d(blok.position.x + blok.size.width / 2,
+		blok.position.y + blok.size.height / 4);
+	glVertex2d(blok.position.x,
+		blok.position.y + blok.size.height / 2);
 	
 }
 
-struct Window RacketColumInitialise(struct Window wind0, int i, int j)
+struct Blok RacketColumInitialise(struct Blok blok0)
 {
-	struct Window wind = wind0;
+	struct Blok blok = blok0;
 
-	wind.bloks[i][j].type = 12;
-	wind.bloks_buf[i][j] = 12;
+	blok.type = 12;
+	blok.condition = 12;
 
-	return wind;
+	return blok;
 }
 
 struct Window RacketColumLaunch(struct Window wind0, int ipos, int jpos)
@@ -179,32 +179,32 @@ struct Window RacketColumLaunch(struct Window wind0, int ipos, int jpos)
 		{
 			wind = BonusCheck(wind, ipos, j);
 		}
-		wind.bloks_buf[ipos][j] = 0;
+		wind.bloks[ipos][j].condition = 0;
 	}
 	return wind;
 }
 
-void RacketColumDraw(struct Window wind, int i, int j)
+void RacketColumDraw(struct Blok blok)
 {
 	glColor3f(0.0, 0.0, 0.0);
 
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x, wind.bloks[i][j].position.y);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.width,
+		blok.position.y);
+	glVertex2d(blok.position.x, blok.position.y);
 
-	glVertex2d(wind.bloks[i][j].position.x,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
+	glVertex2d(blok.position.x,
+		blok.position.y + blok.size.height);
 
 	glColor3f(1.0, 0.59, 0.66);
 
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width / 2,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width * 3 / 4,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height / 2);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width / 2,
-		wind.bloks[i][j].position.y);
-	glVertex2d(wind.bloks[i][j].position.x + wind.bloks[i][j].size.width / 4,
-		wind.bloks[i][j].position.y + wind.bloks[i][j].size.height / 2);
+	glVertex2d(blok.position.x + blok.size.width / 2,
+		blok.position.y + blok.size.height);
+	glVertex2d(blok.position.x + blok.size.width * 3 / 4,
+		blok.position.y + blok.size.height / 2);
+	glVertex2d(blok.position.x + blok.size.width / 2,
+		blok.position.y);
+	glVertex2d(blok.position.x + blok.size.width / 4,
+		blok.position.y + blok.size.height / 2);
 }

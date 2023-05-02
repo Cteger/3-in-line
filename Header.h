@@ -29,6 +29,7 @@ struct Blok
 	struct Size size;
 
 	int type;
+	int condition;
 };
 
 struct Window
@@ -37,7 +38,6 @@ struct Window
 	struct Position position;
 	struct Color color;
 	struct Blok bloks[FIELD_SIZE][FIELD_SIZE];
-	int bloks_buf[FIELD_SIZE][FIELD_SIZE];
 	struct Bonus* bonus;
 	struct Position first_plate, second_plate;
 
