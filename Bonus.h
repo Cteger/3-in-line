@@ -4,20 +4,20 @@
 
 struct Blok BoombInitialise(struct Blok blok0);
 
-struct Window BonusCheck(struct Window wind0, int i, int j);
+struct Blok* BonusCheck(struct Blok* bloks, int field_size, int i);
 
-struct Window BoombBoom(struct Window wind0, int ipos, int jpos);
+struct Blok* BoombBoom(struct Blok* bloks, int field_size, int pos);
 
 void BoombDraw(struct Blok blok);
 
 struct Blok RacketLineInitialise(struct Blok blok0);
 
-struct Window RacketLineLaunch(struct Window wind0, int ipos, int jpos);
+struct Blok* RacketLineLaunch(struct Blok* bloks, int field_size, int pos);
 
 void RacketLineDraw(struct Blok blok);
 
 struct Blok RacketColumInitialise(struct Blok blok0);
 
-struct Window RacketColumLaunch(struct Window wind0, int ipos, int jpos);
+struct Blok* RacketColumLaunch(struct Blok* bloks, int field_size, int pos);
 
 void RacketColumDraw(struct Blok blok);

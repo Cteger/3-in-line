@@ -37,9 +37,9 @@ struct Window
 	struct Size size;
 	struct Position position;
 	struct Color color;
-	struct Blok bloks[FIELD_SIZE][FIELD_SIZE];
+	struct Blok* bloks;
 	struct Bonus* bonus;
-	struct Position first_plate, second_plate;
+	int first_plate, second_plate;
 
 	int plate_flag;
 	int destroy_flag;

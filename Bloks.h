@@ -2,11 +2,11 @@
 
 #include "Header.h"
 
-struct Window BloksInitialise(struct Window wind0);
+struct Blok* BloksInitialise(struct Window wind0);
 
-void DrawBloks(struct Blok bloks[FIELD_SIZE][FIELD_SIZE], int field_size);
+void DrawBloks(struct Blok bloks[FIELD_SIZE], int field_size);
 
-struct Window SwapPlates(struct Window wind0, struct Position first_plate, struct Position second_plate);
+struct Window SwapPlates(struct Window wind0, int first_plate, int second_plate);
 
 struct Window CheckFildToDestroy(struct Window wind0);
 

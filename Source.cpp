@@ -26,7 +26,7 @@ void SystemInitialise()
 	wind.destroy_flag = 0;
 	wind.destroy_start_flag = 0;
 
-	wind = BloksInitialise(wind);
+	wind.bloks = BloksInitialise(wind);
 
 	wind = StartFunc(wind);
 
@@ -61,18 +61,20 @@ void RenderScene()
 {
 	if (wind.plate_flag == 2)
 	{
-		if ((((wind.first_plate.x + 1) == wind.second_plate.x || (wind.first_plate.x - 1) == wind.second_plate.x)
-			&& wind.first_plate.y == wind.second_plate.y)
-			|| (((wind.first_plate.y + 1) == wind.second_plate.y || (wind.first_plate.y - 1) == wind.second_plate.y)
-			&& wind.first_plate.x == wind.second_plate.x))
+		if (((((wind.first_plate + wind.field_size) / wind.field_size) == (wind.second_plate / wind.field_size)
+			|| ((wind.first_plate - wind.field_size) / wind.field_size) == (wind.second_plate / wind.field_size))
+			&& (wind.first_plate % wind.field_size) == (wind.second_plate % wind.field_size))
+			|| ((((wind.first_plate + 1) % wind.field_size) == (wind.second_plate % wind.field_size)
+			|| ((wind.first_plate - 1) % wind.field_size) == (wind.second_plate % wind.field_size))
+			&& (wind.first_plate / wind.field_size) == (wind.second_plate / wind.field_size)))
 		{
 			wind = SwapPlates(wind, wind.first_plate, wind.second_plate);
 
 			Draw();
 			Sleep(SLEEP);
 
-			wind = BonusCheck(wind, wind.first_plate.x, wind.first_plate.y);
-			wind = BonusCheck(wind, wind.second_plate.x, wind.second_plate.y);
+			wind.bloks = BonusCheck(wind.bloks, wind.field_size, wind.first_plate);
+			wind.bloks = BonusCheck(wind.bloks, wind.field_size, wind.second_plate);
 
 			wind = CheckFildToDestroy(wind);
 			Draw();
@@ -120,14 +122,14 @@ void MouseButton(int button, int state, int x, int y)
 	{
 		if (wind.plate_flag == 0)
 		{
-			wind.first_plate.x = x / wind.bloks[0][0].size.width;
-			wind.first_plate.y = y / wind.bloks[0][0].size.height;
+			wind.first_plate = x / wind.bloks[0].size.width
+				+ y / wind.bloks[0].size.height * wind.field_size;
 			wind.plate_flag = 1;
 		}
 		else if (wind.plate_flag == 1)
 		{
-			wind.second_plate.x = x / wind.bloks[0][0].size.width;
-			wind.second_plate.y = y / wind.bloks[0][0].size.height;
+			wind.second_plate = x / wind.bloks[0].size.width
+				+ y / wind.bloks[0].size.height * wind.field_size;
 			wind.plate_flag = 2;
 		}
 		glutPostRedisplay();

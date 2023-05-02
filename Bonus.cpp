@@ -3,24 +3,22 @@
 
 #include <glut.h>
 
-struct Window BonusCheck(struct Window wind0, int i, int j)
+struct Blok* BonusCheck(struct Blok* bloks, int field_size, int i)
 {
-	struct Window wind = wind0;
-
-	if (wind.bloks[i][j].condition == 10)
+	if (bloks[i].condition == 10)
 	{
-		wind = BoombBoom(wind, i, j);
+		bloks = BoombBoom(bloks, field_size, i);
 	}
-	else if (wind.bloks[i][j].condition == 11)
+	else if (bloks[i].condition == 11)
 	{
-		wind = RacketLineLaunch(wind, i, j);
+		bloks = RacketLineLaunch(bloks, field_size, i);
 	}
-	else if (wind.bloks[i][j].condition == 12)
+	else if (bloks[i].condition == 12)
 	{
-		wind = RacketColumLaunch(wind, i, j);
+		bloks = RacketColumLaunch(bloks, field_size, i);
 	}
 
-	return wind;
+	return bloks;
 }
 
 struct Blok BoombInitialise(struct Blok blok0)
@@ -33,26 +31,27 @@ struct Blok BoombInitialise(struct Blok blok0)
 	return blok;
 }
 
-struct Window BoombBoom(struct Window wind0, int ipos, int jpos)
+struct Blok* BoombBoom(struct Blok* bloks, int field_size, int pos)
 {
-	struct Window wind = wind0;
-
-	for (int i = ipos - 2; i < ipos + 2; i++)
+	for (int i = pos % field_size - 2;
+		i < pos % field_size + 2; i++)
 	{
-		for (int j = jpos - 2; j < jpos + 2; j++)
+		for (int j = (pos / field_size - 2) * field_size;
+			j < (pos / field_size + 2) * field_size; j += field_size)
 		{
-			if (i >= 0 && i < wind.field_size
-				&& j >= 0 && j < wind.field_size)
+			if (i >= 0 && i < field_size
+				&& j >= 0 && j < field_size * field_size)
 			{
-				if (i != ipos && j != jpos)
+				if (i != pos % field_size
+					|| j != pos / field_size * field_size)
 				{
-					wind = BonusCheck(wind, i, j);
+					bloks = BonusCheck(bloks, field_size, i + j);
 				}
-				wind.bloks[i][j].condition = 0;
+				bloks[i + j].condition = 0;
 			}
 		}
 	}
-	return wind;
+	return bloks;
 }
 
 void BoombDraw(struct Blok blok)
@@ -117,20 +116,19 @@ struct Blok RacketLineInitialise(struct Blok blok0)
 	return blok;
 }
 
-struct Window RacketLineLaunch(struct Window wind0, int ipos, int jpos)
+struct Blok* RacketLineLaunch(struct Blok* bloks, int field_size, int pos)
 {
-	struct Window wind = wind0;
-
-	for (int i = 0; i < wind.field_size; i++)
+	for (int i = pos - pos % field_size;
+		i < field_size + pos / field_size + pos - pos % field_size; i++)
 	{
-		if (i != ipos)
+		if (i != pos)
 		{
-			wind = BonusCheck(wind, i, jpos);
+			bloks = BonusCheck(bloks, field_size, i);
 		}
-		wind.bloks[i][jpos].condition = 0;
+		bloks[i].condition = 0;
 	}
 
-	return wind;
+	return bloks;
 }
 
 void RacketLineDraw(struct Blok blok)
@@ -169,19 +167,18 @@ struct Blok RacketColumInitialise(struct Blok blok0)
 	return blok;
 }
 
-struct Window RacketColumLaunch(struct Window wind0, int ipos, int jpos)
+struct Blok* RacketColumLaunch(struct Blok* bloks, int field_size, int pos)
 {
-	struct Window wind = wind0;
-
-	for (int j = 0; j < wind.field_size; j++)
+	for (int i = pos % field_size;
+		i < field_size * field_size; i += field_size)
 	{
-		if (j != jpos)
+		if (i != pos)
 		{
-			wind = BonusCheck(wind, ipos, j);
+			bloks = BonusCheck(bloks, field_size, i);
 		}
-		wind.bloks[ipos][j].condition = 0;
+		bloks[i].condition = 0;
 	}
-	return wind;
+	return bloks;
 }
 
 void RacketColumDraw(struct Blok blok)
