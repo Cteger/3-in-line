@@ -43,7 +43,7 @@ void SystemUpdate()
 
 	gluOrtho2D(0, wind.size.width, wind.size.height, 0);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
-//	glutPassiveMotionFunc(MouseMove);
+
 	glutMouseFunc(MouseButton);
 
 	glutDisplayFunc(RenderScene);
@@ -61,15 +61,18 @@ void RenderScene()
 {
 	if (wind.plate_flag == 2)
 	{
-		if (((wind.first_plate.x + 1) == wind.second_plate.x || (wind.first_plate.x - 1) == wind.second_plate.x)
-			&& wind.first_plate.y == wind.second_plate.y
-			|| ((wind.first_plate.y + 1) == wind.second_plate.y || (wind.first_plate.y - 1) == wind.second_plate.y)
-			&& wind.first_plate.x == wind.second_plate.x)
+		if ((((wind.first_plate.x + 1) == wind.second_plate.x || (wind.first_plate.x - 1) == wind.second_plate.x)
+			&& wind.first_plate.y == wind.second_plate.y)
+			|| (((wind.first_plate.y + 1) == wind.second_plate.y || (wind.first_plate.y - 1) == wind.second_plate.y)
+			&& wind.first_plate.x == wind.second_plate.x))
 		{
 			wind = SwapPlates(wind, wind.first_plate, wind.second_plate);
 
 			Draw();
 			Sleep(SLEEP);
+
+			wind = BonusCheck(wind, wind.first_plate.x, wind.first_plate.y);
+			wind = BonusCheck(wind, wind.second_plate.x, wind.second_plate.y);
 
 			wind = CheckFildToDestroy(wind);
 			Draw();

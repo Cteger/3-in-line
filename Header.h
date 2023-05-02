@@ -45,6 +45,7 @@ struct Window
 	int destroy_flag;
 	int destroy_start_flag;
 	int destroy_count;
+	int bonus_count;
 	int glutNum;
 	int menu_size;
 	int field_size;
