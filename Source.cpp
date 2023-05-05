@@ -39,7 +39,7 @@ void SystemUpdate()
 {
 	glutInitWindowPosition(wind.position.x, wind.position.y);
 	glutInitWindowSize(wind.size.width, wind.size.height);
-	wind.glutNum = glutCreateWindow("LSD Game");
+	wind.glutNum = glutCreateWindow("3line Game");
 
 	gluOrtho2D(0, wind.size.width, wind.size.height, 0);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
