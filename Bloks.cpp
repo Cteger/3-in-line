@@ -2,7 +2,6 @@
 #include "Bonus.h"
 
 #include <glut.h>
-#include <windows.h>
 #include <iostream>
 
 struct Blok* BloksInitialise(struct Window wind0)
