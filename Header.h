@@ -6,65 +6,10 @@
 #define FIELD_SIZE 10
 #define SLEEP 200
 
-struct Color
-{
-	float red, green, blue;
-};
-
-struct Position
-{
-	int x;
-	int y;
-};
-
-struct Size
-{
-	int height;
-	int width;
-};
-
-struct Blok
-{
-	struct Position position;
-	struct Size size;
-
-	int type;
-	int condition;
-};
-
-struct Window
-{
-	struct Size size;
-	struct Position position;
-	struct Color color;
-	struct Blok* bloks;
-	struct Bonus* bonus;
-	int first_plate, second_plate;
-
-	int plate_flag;
-	int destroy_flag;
-	int destroy_start_flag;
-	int destroy_count;
-	int bonus_count;
-	int glutNum;
-	int menu_size;
-	int field_size;
-	int score;
-};
-
-
 void SystemOpen(int argc, char** argv);
-
 void SystemRelease();
-
 void SystemInitialise();
-
 void SystemUpdate();
-
 void RenderScene();
-
 void Draw();
-
 void MouseButton(int button, int state, int x, int y);
-
-struct Window StartFunc(struct Window wind0);
