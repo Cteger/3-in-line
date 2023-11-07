@@ -2,197 +2,121 @@
 
 #include <glut.h>
 
-void Bonus::BonusCheck(int condition, int fieldSize, int i)
+Bonus::Bonus(int posx, int posy, int sizex, int sizey, int blok_i)
 {
-	if (condition == 10)
-	{
-		BoombBoom(fieldSize, i);
-	}
-	else if (condition == 11)
-	{
-		RacketLineLaunch(fieldSize, i);
-	}
-	else if (condition == 12)
-	{
-		RacketColumLaunch(fieldSize, i);
-	}
+	setSize(sizex, sizey);
 }
 
-void Bonus::BoombInitialise()
+void Boomb::BonusInitialize(int fieldSize, std::array<Blok, FIELD_SIZE* FIELD_SIZE>& bloks, int pos)
 {
-	type = 10;
-	condition = 10;
-}
-
-struct Blok* BoombBoom(struct Blok* bloks, int fieldSize, int pos)
-{
-	for (int i = pos % fieldSize - 2;
-		i < pos % fieldSize + 2; i++)
+	srand(time(0));
+	bloks[pos].setIsExist(false);
+	bloks[pos].setBonus_i(false);
+	int count = 0;
+	while (count < 5)
 	{
-		for (int j = (pos / fieldSize - 2) * fieldSize;
-			j < (pos / fieldSize + 2) * fieldSize; j += fieldSize)
+		pos = rand() % (fieldSize * fieldSize);
+		if (bloks[pos].getIsExist())
 		{
-			if (i >= 0 && i < fieldSize
-				&& j >= 0 && j < fieldSize * fieldSize)
-			{
-				if (i != pos % fieldSize
-					|| j != pos / fieldSize * fieldSize)
-				{
-					bloks = BonusCheck(bloks, fieldSize, i + j);
-				}
-				bloks[i + j].condition = 0;
-			}
+			bloks[pos].setIsExist(false);
+			count++;
 		}
 	}
-	return bloks;
 }
 
-void BoombDraw(struct Blok blok)
+void LineRacket::BonusInitialize(int fieldSize, std::array<Blok, FIELD_SIZE* FIELD_SIZE>& bloks, int pos)
 {
+	bloks[pos].setBonus_i(false);
+
+	for (int i = pos - pos % fieldSize; i < pos - pos % fieldSize + fieldSize; i++)
+	{
+		bloks[i].setIsExist(false);
+	}
+}
+
+void ColumRacket::BonusInitialize(int fieldSize, std::array<Blok, FIELD_SIZE* FIELD_SIZE>& bloks, int pos)
+{
+	for (int i = pos % fieldSize; i < fieldSize * fieldSize; i += fieldSize)
+	{
+		bloks[i].setIsExist(false);
+	}
+}
+
+void Boomb::DrawBonus(int blokPosx, int blokPosy)
+{
+	glBegin(GL_QUADS);
+
 	glColor3f(0.16, 0.36, 1.0);
 
-	glVertex2d(blok.getPosition(0) + blok.getSize(0), blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0), blok.getPosition(1));
-	glVertex2d(blok.getPosition(0), blok.getPosition(1));
-
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1) + blok.getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy);
+	glVertex2d(blokPosx, blokPosy);
+	glVertex2d(blokPosx, blokPosy + getSize(1));
 
 	glColor3f(0.0, 0.0, 0.0);
 
-	glVertex2d(blok.getPosition(0) + blok.getSize(0),
-		blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) / 4,
-		blok.getPosition(1) + blok.getSize(1) * 3 / 4);
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1));
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1) + blok.getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(0) / 4, blokPosy + getSize(1) * 3 / 4);
+	glVertex2d(blokPosx, blokPosy);
+	glVertex2d(blokPosx, blokPosy + getSize(1));
 
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) / 4,
-		blok.getPosition(1) + blok.getSize(1) / 4);
-	glVertex2d(blok.getPosition(0) + blok.getSize(1),
-		blok.getPosition(1));
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1));
+	glVertex2d(blokPosx, blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(0) / 4, blokPosy + getSize(1) / 4);
+	glVertex2d(blokPosx + getSize(1), blokPosy);
+	glVertex2d(blokPosx, blokPosy);
 
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) * 3 / 4,
-		blok.getPosition(1) + blok.getSize(1) / 4);
-	glVertex2d(blok.getPosition(0) + blok.getSize(1),
-		blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(1),
-		blok.getPosition(1));
+	glVertex2d(blokPosx, blokPosy);
+	glVertex2d(blokPosx + getSize(0) * 3 / 4, blokPosy + getSize(1) / 4);
+	glVertex2d(blokPosx + getSize(1), blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(1), blokPosy);
 
-	glVertex2d(blok.getPosition(0) + blok.getSize(0),
-		blok.getPosition(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) * 3 / 4,
-		blok.getPosition(1) + blok.getSize(1) * 3 / 4);
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(1),
-		blok.getPosition(1) + blok.getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy);
+	glVertex2d(blokPosx + getSize(0) * 3 / 4, blokPosy + getSize(1) * 3 / 4);
+	glVertex2d(blokPosx, blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(1), blokPosy + getSize(1));
+
+	glEnd();
 }
 
-struct Blok RacketLineInitialise(struct Blok blok0)
+
+void LineRacket::DrawBonus(int blokPosx, int blokPosy)
 {
-	struct Blok blok = blok0;
+	glBegin(GL_QUADS);
 
-	blok.type = 11;
-	blok.condition = 11;
-
-	return blok;
-}
-
-struct Blok* RacketLineLaunch(struct Blok* bloks, int fieldSize, int pos)
-{
-	for (int i = pos - pos % fieldSize;
-		i < fieldSize + pos / fieldSize + pos - pos % fieldSize; i++)
-	{
-		if (i != pos)
-		{
-			bloks = BonusCheck(bloks, fieldSize, i);
-		}
-		bloks[i].condition = 0;
-	}
-
-	return bloks;
-}
-
-void RacketLineDraw(struct Blok blok)
-{
 	glColor3f(0.0, 0.0, 0.0);
 
-	glVertex2d(blok.getPosition(0) + blok.getSize(0),
-		blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0),
-		blok.getPosition(1));
-	glVertex2d(blok.getPosition(0), blok.getPosition(1));
-
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1) + blok.getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy);
+	glVertex2d(blokPosx, blokPosy);
+	glVertex2d(blokPosx, blokPosy + getSize(1));
 
 	glColor3f(1.0, 0.59, 0.66);
 
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) / 2,
-		blok.getPosition(1) + blok.getSize(1) * 3 / 4);
-	glVertex2d(blok.getPosition(0) + blok.getSize(0),
-		blok.getPosition(1) + blok.getSize(1) / 2);
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) / 2,
-		blok.getPosition(1) + blok.getSize(1) / 4);
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1) + blok.getSize(1) / 2);
-	
+	glVertex2d(blokPosx + getSize(0) / 2, blokPosy + getSize(1) * 3 / 4);
+	glVertex2d(blokPosx + getSize(0), blokPosy + getSize(1) / 2);
+	glVertex2d(blokPosx + getSize(0) / 2, blokPosy + getSize(1) / 4);
+	glVertex2d(blokPosx, blokPosy + getSize(1) / 2);
+
+	glEnd();
 }
 
-struct Blok RacketColumInitialise(struct Blok blok0)
+void ColumRacket::DrawBonus(int blokPosx, int blokPosy)
 {
-	struct Blok blok = blok0;
+	glBegin(GL_QUADS);
 
-	blok.type = 12;
-	blok.condition = 12;
-
-	return blok;
-}
-
-struct Blok* RacketColumLaunch(struct Blok* bloks, int fieldSize, int pos)
-{
-	for (int i = pos % fieldSize;
-		i < fieldSize * fieldSize; i += fieldSize)
-	{
-		if (i != pos)
-		{
-			bloks = BonusCheck(bloks, fieldSize, i);
-		}
-		bloks[i].condition = 0;
-	}
-	return bloks;
-}
-
-void RacketColumDraw(struct Blok blok)
-{
 	glColor3f(0.0, 0.0, 0.0);
 
-	glVertex2d(blok.getPosition(0) + blok.getSize(0),
-		blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0),
-		blok.getPosition(1));
-	glVertex2d(blok.getPosition(0), blok.getPosition(1));
-
-	glVertex2d(blok.getPosition(0),
-		blok.getPosition(1) + blok.getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(0), blokPosy);
+	glVertex2d(blokPosx, blokPosy);
+	glVertex2d(blokPosx, blokPosy + getSize(1));
 
 	glColor3f(1.0, 0.59, 0.66);
 
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) / 2,
-		blok.getPosition(1) + blok.getSize(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) * 3 / 4,
-		blok.getPosition(1) + blok.getSize(1) / 2);
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) / 2,
-		blok.getPosition(1));
-	glVertex2d(blok.getPosition(0) + blok.getSize(0) / 4,
-		blok.getPosition(1) + blok.getSize(1) / 2);
+	glVertex2d(blokPosx + getSize(0) / 2, blokPosy + getSize(1));
+	glVertex2d(blokPosx + getSize(0) * 3 / 4, blokPosy + getSize(1) / 2);
+	glVertex2d(blokPosx + getSize(0) / 2, blokPosy);
+	glVertex2d(blokPosx + getSize(0) / 4, blokPosy + getSize(1) / 2);
+
+	glEnd();
 }

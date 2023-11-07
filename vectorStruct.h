@@ -1,10 +1,6 @@
 #pragma once
-struct iVector
+
+struct CustomVec
 {
 	int x, y;
-};
-
-struct dVector
-{
-	double x, y;
 };

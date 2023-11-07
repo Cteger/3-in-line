@@ -16,8 +16,11 @@ void SystemOpen(int argc, char** argv)
 
 void SystemInitialise()
 {
-	wind = Window();
-	
+	wind = Window(FIELD_SIZE, WINDOW_SIZEX, WINDOW_SIZEY, WINDOW_POSITIONX, WINDOW_POSITIONY);
+	wind.BloksInitialize();
+
+	wind.StartFunc();
+	wind.setScore(0);
 	SystemUpdate();
 }
 
@@ -45,7 +48,7 @@ void SystemRelease()
 
 void RenderScene()
 {
-	wind.CheckSwap();	
+	wind.CheckSwap();
 
 	wind.CheckFildToFill();
 	Sleep(SLEEP);

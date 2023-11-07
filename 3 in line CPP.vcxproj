@@ -131,7 +131,7 @@
   <ItemGroup>
     <ClCompile Include="blokClass.cpp" />
     <ClCompile Include="bonusClass.cpp" />
-    <ClCompile Include="colorStruct.cpp" />
+    <ClCompile Include="colorMapStruct.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="physObjectClass.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -141,7 +141,7 @@
   <ItemGroup>
     <ClInclude Include="blokClass.h" />
     <ClInclude Include="bonusClass.h" />
-    <ClInclude Include="colorStruct.h" />
+    <ClInclude Include="colorMapStruct.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="physObjectClass.h" />
     <ClInclude Include="vectorStruct.h" />

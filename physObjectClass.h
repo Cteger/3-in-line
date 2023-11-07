@@ -1,28 +1,22 @@
 #pragma once
 
 #include "vectorStruct.h"
-#include "colorStruct.h"
+#include "colorMapStruct.h"
 
 class PhysObject
 {
-//protected:
-private:
-	Color color;//tuple
-	iVector position;
-	iVector size;
-	dVector vect;
+protected:
+	ColorMap color;
+	CustomVec position; // без шаблона
+	CustomVec size;
 
 public:
-
 	void setColor(double r, double g, double b);
-	double getColor(int i);
+	double getColor(std::string color);
 
 	void setSize(int x, int y);
 	int getSize(int i);
 
 	void setPosition(int x, int y);
 	int getPosition(int i);
-
-	void setVec(double x, double y);
-	double getVec(int i);
 };

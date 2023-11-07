@@ -2,33 +2,54 @@
 
 #include "Header.h"
 #include "physObjectClass.h"
+#include "blokClass.h"
 
-class Bonus
+#include <array>
+
+class Bonus : public PhysObject
 {
-private:
-	int type;
-	int condition;
-
 public:
+	Bonus() {};
+	Bonus(int posx, int posy, int sizex, int sizey, int blok_i);
+	virtual~Bonus() {};
 
-	void BoombInitialise();
+	virtual void BonusInitialize(int fieldSize, std::array<Blok, FIELD_SIZE* FIELD_SIZE>& bloks, int pos) {};
 
-	void BonusCheck(int condition, int fieldSize, int i);
+	virtual void DrawBonus(int blokPosx, int blokPosy) {};
+};
 
-	struct Blok* BoombBoom(struct Blok* bloks, int fieldSize, int pos);
+class Boomb : public Bonus
+{
+public:
+	Boomb() {};
+	Boomb(int posx, int posy, int sizex, int sizey, int blok_i) : Bonus(posx, posy, sizex, sizey, blok_i) {};
+	~Boomb() {};
 
-	void BoombDraw(struct Blok blok);
+	void BonusInitialize(int fieldSize, std::array<Blok, FIELD_SIZE* FIELD_SIZE>& bloks, int pos) override;
 
-	struct Blok RacketLineInitialise(struct Blok blok0);
+	void DrawBonus(int blokPosx, int blokPosy) override;
+};
 
-	struct Blok* RacketLineLaunch(struct Blok* bloks, int fieldSize, int pos);
+class LineRacket : public Bonus
+{
+public:
+	LineRacket() {};
+	LineRacket(int posx, int posy, int sizex, int sizey, int blok_i) : Bonus(posx, posy, sizex, sizey, blok_i) {};
+	~LineRacket() {};
 
-	void RacketLineDraw(struct Blok blok);
+	void BonusInitialize(int fieldSize, std::array<Blok, FIELD_SIZE* FIELD_SIZE>& bloks, int pos) override;
 
-	struct Blok RacketColumInitialise(struct Blok blok0);
+	void DrawBonus(int blokPosx, int blokPosy) override;
+};
 
-	struct Blok* RacketColumLaunch(struct Blok* bloks, int fieldSize, int pos);
+class ColumRacket : public Bonus
+{
+public:
+	ColumRacket() {};
+	ColumRacket(int posx, int posy, int sizex, int sizey, int blok_i) : Bonus(posx, posy, sizex, sizey, blok_i) {};
+	~ColumRacket() {};
 
-	void RacketColumDraw(struct Blok blok);
+	void BonusInitialize(int fieldSize, std::array<Blok, FIELD_SIZE* FIELD_SIZE>& bloks, int pos) override;
 
+	void DrawBonus(int blokPosx, int blokPosy) override;
 };

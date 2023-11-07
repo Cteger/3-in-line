@@ -5,130 +5,112 @@
 #include <glut.h>
 
 
-//Window::Window()
-//{
-//
-//}
-
-Window::Window()
+Window::Window(int fieldSize, int windSizex, int windSizey, int windPosx, int windPosy)
 {
-	setSize(WINDOW_SIZEX + 1, WINDOW_SIZEY + 1);
-	setPosition(WINDOW_POSITIONX, WINDOW_POSITIONY);
+	setSize(windSizex + 1, windSizey + 1);
+	setPosition(windPosx, windPosy);
+	firstPlate_i = 0;
+	secondPlate_i = 0;
 
-	fieldSize = FIELD_SIZE;
-
-	destroy_flag = 0;
-	destroy_start_flag = 0;
-
-	for (int i = 0; i < fieldSize * fieldSize; i++)
-	{
-		auto new_blok = new Blok(i, fieldSize, getSize(0), getSize(1));
-		bloks.push_back(new_blok);
-	}
-
-	StartFunc();
-
-	destroy_flag = 0;
+	plateChooseCount = 0;
+	startFlag = 0;
+	score = 0;
+	this->fieldSize = fieldSize;
 }
 
 void Window::StartFunc()
 {
-	destroy_count = 1;
-
 	CheckFildToFill();
 
-	while (destroy_count != 0)
+	while (CheckFildToDestroy())
 	{
-		CheckFildToDestroy();
-
 		CheckFildToFill();
 	}
 
-	destroy_start_flag = 1;
+	startFlag = 1;
 }
 
-void Window::CheckFildToDestroy()
+void Window::BloksInitialize()
 {
-	destroy_count = 0;
-	bonus_count = 0;
-
 	for (int i = 0; i < fieldSize * fieldSize; i++)
 	{
-		if (i % fieldSize < fieldSize - 2)
-		{
-			if (bloks[i].type == bloks[i + 1].type
-				&& bloks[i].type == bloks[i + 2].type
-				&& bloks[i].type != 0)
-			{
-				bloks[i].condition = 0;
+		bloks[i] = Blok(i, fieldSize, getSize(0), getSize(1));
+	}
+}
 
-				for (int k = i; k % fieldSize < fieldSize - 1; k++)
-				{
-					if (bloks[k].type == bloks[k + 1].type)
-					{
-						if (bloks[k + 1].condition == 1)
-						{
-							bloks[k + 1].condition = 0;
-						}
-						bonus_count++;
-					}
-					else
-					{
-						if (bonus_count == 3 && destroy_start_flag == 1)
-						{
-							bloks[i] = RacketLineInitialise(bloks[i]);
-						}
-						else if (bonus_count > 5 && destroy_start_flag == 1)
-						{
-							bloks[i] = BoombInitialise(bloks[i]);
-						}
-						else
-						{
-							bonus_count = 0;
-						}
-					}
-				}
+bool Window::CheckFildToDestroy()
+{
+	int destroyLineCount;
+	int destroyColumCount;
+	for (int i = 0; i < fieldSize * fieldSize; i++)
+	{
+		destroyLineCount = LineCheck(i);
+		destroyColumCount = ColumCheck(i);
+		if (destroyLineCount >= 3)
+		{
+			for (int j = i; j < i + destroyLineCount; j++)
+			{
+				bloks[j].setIsExist(false);
 			}
 		}
-		if (i / fieldSize < fieldSize - 2)
+		if (destroyColumCount >= 3)
 		{
-			if (bloks[i].type == bloks[i + fieldSize].type
-				&& bloks[i].type == bloks[i + 2 * fieldSize].type
-				&& bloks[i].type != 0)
+			for (int j = i; j < i + destroyColumCount * fieldSize; j += fieldSize)
 			{
-				bloks[i].condition = 0;
-
-				for (int k = i; k < fieldSize * fieldSize - 1; k += fieldSize)
-				{
-					if (bloks[k].type == bloks[k + fieldSize].type)
-					{
-						if (bloks[k + fieldSize].condition == 1)
-						{
-							bloks[k + fieldSize].condition = 0;
-						}
-						bonus_count++;
-					}
-					else
-					{
-						if (bonus_count == 3 && destroy_start_flag == 1)
-						{
-							bloks[i] = RacketColumInitialise(bloks[i]);
-						}
-						else if (bonus_count > 5 && destroy_start_flag == 1)
-						{
-							bloks[i] = BoombInitialise(bloks[i]);
-						}
-						else
-						{
-							bonus_count = 0;
-						}
-					}
-				}
+				bloks[j].setIsExist(false);
 			}
+		}
+		if (destroyLineCount == 4 && startFlag == 1)
+		{
+			bonuses.push_back(new LineRacket(bloks[i].getPosition(0), bloks[i].getPosition(1), bloks[i].getSize(0), bloks[i].getSize(1), i));
+			bloks[i].setBonus_i(bonuses.size() - 1);
+			bloks[i].setBlokColor(CBonus);
+			bloks[i].setIsExist(true);
+		}
+		if (destroyColumCount == 4 && startFlag == 1)
+		{
+			bonuses.push_back(new ColumRacket(bloks[i].getPosition(0), bloks[i].getPosition(1), bloks[i].getSize(0), bloks[i].getSize(1), i));
+			bloks[i].setBonus_i(bonuses.size() - 1);
+			bloks[i].setBlokColor(CBonus);
+			bloks[i].setIsExist(true);
+		}
+		if ((destroyLineCount == 5 || destroyColumCount == 5) && startFlag == 1)
+		{
+			bonuses.push_back(new Boomb(bloks[i].getPosition(0), bloks[i].getPosition(1), bloks[i].getSize(0), bloks[i].getSize(1), i));
+			bloks[i].setBonus_i(bonuses.size() - 1);
+			bloks[i].setBlokColor(CBonus);
+			bloks[i].setIsExist(true);
 		}
 	}
+	return Destroy();
+}
 
-	Destroy();
+int Window::LineCheck(int blok_i)
+{
+	int count = 1;
+
+	if (blok_i % fieldSize < fieldSize - 1)
+	{
+		if (bloks[blok_i].getBlokColor() == bloks[blok_i + 1].getBlokColor())
+		{
+			count += LineCheck(blok_i + 1);
+		}
+	}
+	return count;
+}
+
+int Window::ColumCheck(int blok_i)
+{
+	int count = 1;
+
+	if (blok_i / fieldSize < fieldSize - 1)
+	{
+		if (bloks[blok_i].getBlokColor() == bloks[blok_i + fieldSize].getBlokColor())
+		{
+			count += ColumCheck(blok_i + fieldSize);
+		}
+	}
+	return count;
 }
 
 void Window::CheckFildToFill()
@@ -140,128 +122,159 @@ void Window::CheckFildToFill()
 	{
 		count = 0;
 
-		for (int i = 0; i < fieldSize * fieldSize; i++)
+		for (int i = 0; i < fieldSize * (fieldSize - 1); i++)
 		{
-			if (bloks[i]->getType() == 0 && i / fieldSize == 0)
+			if (bloks[i].getBlokColor() == 0 && i / fieldSize == 0)
 			{
-				bloks[i]->setType(rand() % 5);
-				bloks[i]->setCondition(1);
-				count++;
+				bloks[i].setBlokColor(rand() % 5);
+				bloks[i].setIsExist(1);
 			}
 
-			if (bloks[i + fieldSize]->getType() == 0)
+			if (bloks[i].getBlokColor() != 0 && bloks[i + fieldSize].getBlokColor() == 0)
 			{
-				bloks[i + fieldSize]->setType(bloks[i]->getType());
-				bloks[i]->setType(0);
+				int fall_count = ColumCheck(i + fieldSize);
 
-				bloks[i + fieldSize]->setCondition(bloks[i].condition);
-				bloks[i]->setCondition(1);
+				bloks[i + fall_count * fieldSize].setBlokColor(bloks[i].getBlokColor());
+				bloks[i + fall_count * fieldSize].setBonus_i(bloks[i].getBonus_i());
+				bloks[i].setBonus_i(-1);
+				bloks[i].setBlokColor(0);
+				bloks[i + fall_count * fieldSize].setIsExist(1);
+				bloks[i].setBlokColor(0);
 				count++;
 			}
 		}
 	}
 }
 
-void Window::Destroy()
+bool Window::Destroy()
 {
-	destroy_flag = 0;
+	bool destroy_flag = 0;
 
 	for (int i = 0; i < fieldSize * fieldSize; i++)
 	{
-		if (bloks[i]->getCondition() == 0)
+		if (bloks[i].getIsExist() == false)
 		{
-			destroy_count = 1;
 			destroy_flag = 1;
-			bloks[i]->setType(0);
-			bloks[i]->setCondition(1);
-			if (destroy_start_flag == 1)
-			{
-				score++;
-			}
+			bloks[i].setBlokColor(0);
+			bloks[i].setIsExist(1);
+
+			score++;
 		}
 	}
+
+	return destroy_flag;
 }
 
 void Window::DrawBloks()
 {
+	int bonus_i;
 	for (int i = 0; i < fieldSize * fieldSize; i++)
 	{
-		bloks[i]->DrawBlok();
+		bonus_i = bloks[i].getBonus_i();
+		if (bonus_i >= 0)
+		{
+			bonuses[bonus_i]->DrawBonus(bloks[i].getPosition(0), bloks[i].getPosition(1));
+		}
+		else
+		{
+			bloks[i].ResetBlokColor();
+			bloks[i].DrawBlok();
+		}
 	}
 }
 
 void Window::CheckPlate(int x, int y)
 {
-	if (plate_flag == 0)
+	if (plateChooseCount == 0)
 	{
-		first_plate = x / bloks[0]->getSize(0) + y / bloks[0]->getSize(1) * fieldSize;
-		plate_flag = 1;
+		firstPlate_i = x / bloks[0].getSize(0) + y / bloks[0].getSize(1) * fieldSize;
+		plateChooseCount = 1;
 	}
-	else if (plate_flag == 1)
+	else if (plateChooseCount == 1)
 	{
-		second_plate = x / bloks[0]->getSize(0) + y / bloks[0]->getSize(1) * fieldSize;
-		plate_flag = 2;
+		secondPlate_i = x / bloks[0].getSize(0) + y / bloks[0].getSize(1) * fieldSize;
+		plateChooseCount = 2;
 	}
 
 }
 
 void Window::CheckSwap()
 {
-	if (plate_flag == 2)
+	if (plateChooseCount == 2)
 	{
-		if (((first_plate / fieldSize + 1) == (second_plate / fieldSize)
-			|| ((first_plate / fieldSize - 1) == (second_plate / fieldSize))
-			&& (first_plate % fieldSize) == (second_plate % fieldSize))
-			|| ((((first_plate + 1) % fieldSize) == (second_plate % fieldSize)
-			|| ((first_plate - 1) % fieldSize) == (second_plate % fieldSize))
-			&& (first_plate / fieldSize) == (second_plate / fieldSize)))
+		if (IsNeighbour())
 		{
 			SwapPlates();
 
 			Draw();
 			Sleep(SLEEP);
 
-			bloks[first_plate]->BonusCheck(bloks[first_plate]->getCondition(), fieldSize, first_plate);
-			bloks[second_plate]->BonusCheck(bloks[second_plate]->getCondition(), fieldSize, second_plate);
+			BonusCheck(bloks[firstPlate_i].getBonus_i(), firstPlate_i);
+			BonusCheck(bloks[secondPlate_i].getBonus_i(), secondPlate_i);
 
-			CheckFildToDestroy();
-			Draw();
-
-			if (destroy_flag == 0)
+			if (!CheckFildToDestroy())
 			{
 				SwapPlates();
-				Draw();
+				Sleep(SLEEP);
 			}
-			else
-			{
-				destroy_flag = 0;
-			}
+			Draw();
 		}
-		plate_flag = 0;
+		plateChooseCount = 0;
 	}
+}
+
+bool Window::IsNeighbour()
+{
+	bool xNeighbour = 0, yNeighbour = 0;
+
+	if (((firstPlate_i / fieldSize + 1) == (secondPlate_i / fieldSize) || (firstPlate_i / fieldSize - 1) == (secondPlate_i / fieldSize))
+		&& (firstPlate_i % fieldSize) == (secondPlate_i % fieldSize))
+	{
+		xNeighbour = 1;
+	}
+
+	if ((((firstPlate_i + 1) % fieldSize) == (secondPlate_i % fieldSize) || ((firstPlate_i - 1) % fieldSize) == (secondPlate_i % fieldSize))
+		&& (firstPlate_i / fieldSize) == (secondPlate_i / fieldSize))
+	{
+		yNeighbour = 1;
+	}
+
+	return (xNeighbour || yNeighbour);
 }
 
 void Window::SwapPlates()
 {
-	int type_buf;
-	int condition_buf;
+	int blokColor_buf;
 
-	condition_buf = bloks[first_plate]->getCondition();
-	bloks[first_plate]->setCondition(bloks[second_plate]->getCondition());
-	bloks[second_plate]->setCondition(condition_buf);
+	blokColor_buf = bloks[firstPlate_i].getBlokColor();
+	bloks[firstPlate_i].setBlokColor(bloks[secondPlate_i].getBlokColor());
+	bloks[secondPlate_i].setBlokColor(blokColor_buf);
 
-	type_buf = bloks[first_plate]->getType();
-	bloks[first_plate]->setType(bloks[second_plate]->getType());
-	bloks[second_plate]->setType(type_buf);
+	if (bloks[firstPlate_i].getBonus_i() >= 0 || bloks[secondPlate_i].getBonus_i() >= 0)
+	{
+		int bonus_i_buf;
+		bonus_i_buf = bloks[firstPlate_i].getBonus_i();
+		bloks[firstPlate_i].setBonus_i(bloks[secondPlate_i].getBonus_i());
+		bloks[secondPlate_i].setBonus_i(bonus_i_buf);
+	}
 }
 
-
-int Window::getScore()
+void Window::BonusCheck(int bonus_i, int i)
 {
-	return score;
-}
+	if (bonus_i >= 0)
+	{
+		bonuses[bonus_i]->BonusInitialize(fieldSize, bloks, i);
+		bloks[i].setBonus_i(-1);
+		bloks[i].setBlokColor(Empty);
+		delete bonuses[bonus_i];
 
-int Window::getFieldSize()
-{
-	return fieldSize;
+		for (int j = 0; j < fieldSize * fieldSize; j++)
+		{
+			if (bloks[j].getBonus_i() > bonus_i)
+			{
+				bloks[j].setBonus_i(bloks[j].getBonus_i() - 1);
+			}
+		}
+		bonuses.erase(bonuses.begin() + bonus_i);
+	}
 }

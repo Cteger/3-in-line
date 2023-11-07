@@ -4,47 +4,47 @@
 #include "bonusClass.h"
 
 #include <vector>
+#include <array>
 
-class Window: public PhysObject
+class Window : public PhysObject
 {
 private:
-	std::vector<Bonus*> bonus;
-	std::vector<Blok*> bloks;
+	std::array<Blok, FIELD_SIZE* FIELD_SIZE> bloks;
+	std::vector<Bonus*> bonuses;
 
-	int first_plate, second_plate;
+	int firstPlate_i, secondPlate_i;
 
-	int plate_flag;
-	int destroy_flag;
-	int destroy_start_flag;
-	int destroy_count;
-	int bonus_count;
-	int menu_size;
+	int plateChooseCount;
+	bool startFlag;
 	int fieldSize;
 	int score;
 
 public:
 
-	//Window();
-	Window();
+	Window() {};
+	Window(int fieldSize, int windSizex, int windSizey, int windPosx, int windPosy);
 
 	void StartFunc();
+	void BloksInitialize();
 
-	void CheckFildToDestroy();
+	bool CheckFildToDestroy();
+	int LineCheck(int blok_i);
+	int ColumCheck(int blok_i);
 
 	void CheckFildToFill();
-
-	void Destroy();
+	bool Destroy();
 
 	void DrawBloks();
 
 	void CheckPlate(int x, int y);
-
 	void CheckSwap();
-
+	bool IsNeighbour();
 	void SwapPlates();
 
-	int getScore();
+	void BonusCheck(int bonus_i, int i);
 
-	int getFieldSize();
+	void setScore(int score) { this->score = score; }
+	int getScore() { return score; }
 
+	int getFieldSize() { return fieldSize; }
 };

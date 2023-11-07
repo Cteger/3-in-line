@@ -16,7 +16,7 @@
     <ClCompile Include="bonusClass.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
-    <ClCompile Include="colorStruct.cpp">
+    <ClCompile Include="colorMapStruct.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
     <ClCompile Include="physObjectClass.cpp">
@@ -39,7 +39,7 @@
     <ClInclude Include="bonusClass.h">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
-    <ClInclude Include="colorStruct.h">
+    <ClInclude Include="colorMapStruct.h">
       <Filter>Файлы ресурсов</Filter>
     </ClInclude>
     <ClInclude Include="physObjectClass.h">

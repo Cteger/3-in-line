@@ -1,129 +1,123 @@
 #include "blokClass.h"
-#include "bonusClass.h"
 
 #include <glut.h>
 #include <iostream>
 
-Blok::Blok()
-{
-
-}
-
-Blok::Blok(int i, int fieldSize, int windSizex, int windSizey)
+Blok::Blok(int blok_i, int fieldSize, int windSizex, int windSizey)
 {
 	setSize(windSizey / fieldSize, windSizex / fieldSize);
-	setPosition((i % fieldSize) * getSize(0) + 2, (i / fieldSize)	* getSize(1) + 2);
+	setPosition((blok_i % fieldSize) * getSize(0) + 2, (blok_i / fieldSize) * getSize(1) + 2);
 
-	srand(time(0));
-	type = rand() % 5;
-	condition = 1;
+	bonus_i = -1;
+	blokColor = Empty;
+	isExist = 1;
+}
+
+void Blok::setBlokColor(int color_i)
+{
+	switch (color_i)
+	{
+	case 0:
+		blokColor = Empty;
+		break;
+	case 1:
+		blokColor = Red;
+		break;
+	case 2:
+		blokColor = Green;
+		break;
+	case 3:
+		blokColor = Blue;
+		break;
+	case 4:
+		blokColor = Yellow;
+		break;
+	case 5:
+		blokColor = RB;
+		break;
+	case 6:
+		blokColor = GB;
+		break;
+	case 7:
+		blokColor = LGreen;
+		break;
+	case 8:
+		blokColor = LRed;
+		break;
+	case 9:
+		blokColor = Gray;
+		break;
+	case 10:
+		blokColor = CBonus;
+		break;
+	}
 }
 
 void Blok::ResetBlokColor()
 {
-	if (type == 0)
+	switch (blokColor)//enum
 	{
-		glColor3f(1.0, 1.0, 1.0);
-	}
-	else if (type == 1)
-	{
-		glColor3f(1.0, 0.0, 0.0);
-	}
-	else if (type == 2)
-	{
-		glColor3f(0.0, 1.0, 0.0);
-	}
-	else if (type == 3)
-	{
-		glColor3f(0.0, 0.0, 1.0);
-	}
-	else if (type == 4)
-	{
-		glColor3f(1.0, 1.0, 0.0);
-	}
-	else if (type == 5)
-	{
-		glColor3f(1.0, 0.0, 1.0);
-	}
-	else if (type == 6)
-	{
-		glColor3f(0.0, 1.0, 1.0);
-	}
-	else if (type == 7)
-	{
-		glColor3f(0.5, 1.0, 0.5);
-	}
-	else if (type == 8)
-	{
-		glColor3f(1.0, 0.5, 0.5);
-	}
-	else if (type == 9)
-	{
-		glColor3f(0.2, 0.5, 0.5);
-	}
-	else if (type == 10)
-	{
-		glColor3f(0.0, 0.0, 0.0);
+	case Empty:
+		setColor(1.0, 1.0, 1.0);
+		break;
+	case Red:
+		setColor(1.0, 0.0, 0.0);
+		break;
+	case Green:
+		setColor(0.0, 1.0, 0.0);
+		break;
+	case Blue:
+		setColor(0.0, 0.0, 1.0);
+		break;
+	case Yellow:
+		setColor(1.0, 1.0, 0.0);
+		break;
+	case RB:
+		setColor(1.0, 0.0, 1.0);
+		break;
+	case GB:
+		setColor(0.0, 1.0, 1.0);
+		break;
+	case LGreen:
+		setColor(0.5, 1.0, 0.5);
+		break;
+	case LRed:
+		setColor(1.0, 0.5, 0.5);
+		break;
+	case Gray:
+		setColor(0.2, 0.5, 0.5);
+		break;
+	case CBonus:
+		setColor(0.0, 0.0, 0.0);
+		break;
 	}
 }
 
-void Blok::DrawBlok()
+void Blok::DrawLine()
 {
-	if (type == 10)
-	{
-		BoombDraw();
-	}
-	else if (type == 11)
-	{
-		RacketLineDraw();
-	}
-	else if (type == 12)
-	{
-		RacketColumDraw();
-	}
-	else
-	{
-		ResetBlokColor();
-
-		glBegin(GL_QUADS);
-
-		glColor3f(getColor(0), getColor(1), getColor(2));
-
-		glVertex2d(getPosition(0) + getSize(0), getPosition(1) + getSize(1));
-		glVertex2d(getPosition(0) + getSize(0),	getPosition(1));
-		glVertex2d(getPosition(0), getPosition(1));
-		glVertex2d(getPosition(0), getPosition(1) + getSize(1));
-
-		glEnd();
-	}
-	
 	glColor3f(0, 0, 0);
 
 	glBegin(GL_LINE_LOOP);
 
-	glVertex2d(getPosition(0) + getSize(0),	getPosition(1) + getSize(1));
-	glVertex2d(getPosition(0) + getSize(0),	getPosition(1));
-	glVertex2d(getPosition(0), getPosition(1));
-	glVertex2d(getPosition(0), getPosition(1) + getSize(1));
+	glVertex2d(position.x + size.x, position.y + size.y);
+	glVertex2d(position.x + size.x, position.y);
+	glVertex2d(position.x, position.y);
+	glVertex2d(position.x, position.y + size.y);
 
 	glEnd();
 }
+void Blok::DrawBlok()
+{
+	glBegin(GL_QUADS);
 
-void Blok::setType(int type)
-{
-	this->type = type;
-}
-int Blok::getType()
-{
-	return type;
-}
+	glColor3f(color.map["red"], color.map["green"], color.map["blue"]);
 
-void Blok::setCondition(int condition)
-{
-	this->condition = condition;
-}
+	glVertex2d(position.x + size.x, position.y + size.y);
+	glVertex2d(position.x + size.x, position.y);
+	glVertex2d(position.x, position.y);
+	glVertex2d(position.x, position.y + size.y);
 
-int Blok::getCondition()
-{
-	return condition;
+	glEnd();
+
+	DrawLine();
 }

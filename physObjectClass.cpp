@@ -1,17 +1,21 @@
 #include "physObjectClass.h"
 
+#include <glut.h>
+
+
 void PhysObject::setColor(double r, double g, double b)
 {
-	color.red = r;
-	color.green = g;
-	color.blue = b;
+	color.map["red"] = r;
+	color.map["green"] = g;
+	color.map["blue"] = b;
 }
 
-double PhysObject::getColor(int i)
+double PhysObject::getColor(std::string new_color)
 {
-	if (i == 0) return color.red;
-	else if (i == 1) return color.green;
-	else return color.blue;
+	if (new_color == "red") return color.map["red"];
+	else if (new_color == "green") return color.map["green"];
+	else if (new_color == "blue") return color.map["blue"];
+	else return 0;
 }
 
 
@@ -36,15 +40,4 @@ int PhysObject::getPosition(int i)
 {
 	if (i == 0)	return position.x;
 	else return position.y;
-}
-
-void PhysObject::setVec(double x, double y)
-{
-	vect.x = x;
-	vect.y = y;
-}
-double PhysObject::getVec(int i)
-{
-	if (i == 0)	return vect.x;
-	else return vect.y;
 }
